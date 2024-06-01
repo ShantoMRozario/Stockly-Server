@@ -3,7 +3,6 @@
 const cloudinary = require("../utility/CloudinaryConfig")
 const productModel = require("../models/Product/ProductModel")
 const multer = require("multer")
-const multerS3 = require('multer-s3');
 const DetailsService = require("../Services/Common/DetailsService")
 const DropdownService = require("../Services/Common/DropdownService")
 const ListTwoJoinService = require("../Services/Common/ListTwoJoinService")
