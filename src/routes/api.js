@@ -83,7 +83,7 @@ router.get('/supplierDropdown',authMiddleware,SupplierController.SupplierDropdow
 //SupplierList
 router.get('/supplierList/:pageNumber/:perPage/:search',authMiddleware,SupplierController.SupplierList)
 
-//? Supplier Routes
+//? Product Routes
 //CreateProduct
 router.post('/createProduct',authMiddleware,ProductController.CreateProduct)
 //ProductDetails
