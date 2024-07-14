@@ -1,4 +1,5 @@
-const SalesProductModel = require("../../models/Sales/SalesProductModel") 
+const SalesProductModel = require("../../models/Sales/SalesProductModel")
+
 
 const SalesReportService = async(req)=>{
     try{
@@ -21,7 +22,7 @@ const SalesReportService = async(req)=>{
                 }
             }
         ])
-        return {status:'Success',data:data}
+        return {status:'Success',data:data,fromDate,toDate}
     }
     catch(error){
         return {status:'Failed',data:error.message}

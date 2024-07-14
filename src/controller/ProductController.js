@@ -6,6 +6,14 @@ const multer = require("multer")
 const DetailsService = require("../Services/Common/DetailsService")
 const DropdownService = require("../Services/Common/DropdownService")
 const ListTwoJoinService = require("../Services/Common/ListTwoJoinService")
+const fs = require('fs');
+const { default: mongoose } = require("mongoose")
+const ReturnProductModel = require("../models/Returns/ReturnProductModel")
+const PurchaseProductModel = require("../models/Purchases/PurchaseProductModel")
+const AssociateVerificationService = require("../Services/Common/AssociateVerification")
+const SalesProductModel = require("../models/Sales/SalesProductModel")
+const DeleteService = require("../Services/Common/DeleteService")
+const ProductFullPage = require("../Services/Common/ProductFullPage")
 
 //Multer Configuration
 // const upload = multer({dest:'uploads/'}).single('image')
@@ -93,6 +101,15 @@ exports.CreateProduct = async(req,res)=>{
                 return cloudinary.uploader.upload(imagePath,{
                     folder:"productsImages" //folder name
                 })
+                .then(result => {
+                    // Delete the local file after successful upload (optional)
+                    fs.unlink(imagePath, (err) => {
+                      if (err) {
+                        console.error(`Failed to delete local file: ${imagePath}`); // Log error if deletion fails
+                      }
+                    });
+                    return result
+                })
             })
             const uploadedImages = await Promise.all(promises)
 
@@ -118,11 +135,11 @@ exports.CreateProduct = async(req,res)=>{
 
 //ProductDetails
 exports.ProductDetails = async(req,res)=>{
-    let result = await DetailsService(req,productModel)
+    let result = await ProductFullPage(req,productModel)
     res.status(200).json(result)
 }
 
-
+ 
 //Product Update
 exports.ProductUpdate = async(req,res)=>{
     try{
@@ -154,26 +171,34 @@ exports.ProductUpdate = async(req,res)=>{
             }
     
             //Upload new image to cloudinary 
-            const uploadPromises = images.map(imagePath=>{
-                return cloudinary.uploader.upload(imagePath,{
-                    folder:"productsImages" //folder name
-                }) 
-            })
-            const uploadedImages = await Promise.all(uploadPromises)
-    
-            //Update Product with new image URL
-            const updateData = {
-                productName:body.productName,
-                unit:body.unit,
-                details:body.details,
-                images:uploadedImages.map(img=>img.secure_url), //store image URL in an array
-                categoryId:body.categoryId,
-                brandId:body.brandId
+            if(images.length > 0){
+
+                const uploadPromises = images.map(imagePath=>{
+                    return cloudinary.uploader.upload(imagePath,{
+                        folder:"productsImages" //folder name
+                    }) 
+                    .then(result => {
+                        // Delete the file after successful upload
+                        fs.unlink(imagePath, (err) => {
+                            if (err) {
+                                console.error(`Failed to delete local file: ${imagePath}`);
+                            }
+                        });
+                        return result;
+                    });
+                })
+                const uploadedImages = await Promise.all(uploadPromises)
+                product.images = uploadedImages.map(img=>img.secure_url)
             }
-    
-            await productModel.updateOne({userEmail:userEmail, _id:id},updateData)
-    
-            return res.status(200).json({status:"Success",message:"Product Updated",data:updateData})
+              //Update Product with new image URL
+              product.productName = body.productName;
+              product.unit = body.unit;
+              product.details = body.details;
+              product.categoryId = body.categoryId;
+              product.brandId = body.brandId;
+
+              await product.save()   
+            return res.status(200).json({status:"Success",message:"Product Updated",data:product})
         })
     }
     catch(error){
@@ -197,5 +222,49 @@ exports.ProductDetailsList = async(req,res)=>{
 
     const result = await ListTwoJoinService(req,productModel,array,JoinStageOne,JoinStageTwo)
     res.status(200).json(result)
+}
+
+//Delete Product
+exports.DeleteProduct = async(req,res)=>{
+    try{
+        let deleteId = req.params.id
+        const ObjectId = mongoose.Types.ObjectId
+
+        let returnAssociationCheck = await AssociateVerificationService({productId:new ObjectId(deleteId)},ReturnProductModel)
+        let purchaseAssociationCheck = await AssociateVerificationService({productId:new ObjectId(deleteId)},PurchaseProductModel)
+        let salesAssociationCheck = await AssociateVerificationService({productId:new ObjectId(deleteId)},SalesProductModel)
+
+        if(returnAssociationCheck){
+            return res.status(200).json({status:'Associated',data:returnAssociationCheck, message:'Product is associated with return'})
+        }
+        else if(purchaseAssociationCheck){
+            return res.status(200).json({status:'Associated',data:purchaseAssociationCheck, message:'Product is associated with purchase'})
+        }
+        else if(salesAssociationCheck){
+            return res.status(200).json({status:'Associated',data:salesAssociationCheck, message:'Product is associated with sales'})
+        }
+        else{
+            let product = await productModel.findById(deleteId)
+            if(!product){
+                return res.status(404).json({status:"Failed", message:"Product not found", data:product})
+            }
+
+            //delete old images from cloudinary
+            if(product.images && product.images.length > 0){
+                const deletePromises = product.images.map(imageUrl=>{
+                    //extract public image from Url
+                    const publicId = imageUrl.split('/').pop().split('.')[0]
+                    return cloudinary.uploader.destroy(`productsImages/${publicId}`)
+                })
+                await Promise.all(deletePromises)
+            }
+            //delete product from database
+            let result = await DeleteService(req,productModel)  
+            res.status(200).json({status:"Success",message:"Product Deleted",data:result})
+        }
+    }
+    catch(error){
+        res.status(500).json({status:"Failed",message:error.message,data:error})    
+    }
 }
 

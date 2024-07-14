@@ -1,37 +1,37 @@
-const mongoose = require("mongoose")
+const { default: mongoose } = require("mongoose")
 const CreateService = require("../Services/Common/CreateService")
 const DeleteService = require("../Services/Common/DeleteService")
 const DetailsService = require("../Services/Common/DetailsService")
 const DropdownService = require("../Services/Common/DropdownService")
 const ListService = require("../Services/Common/ListService")
 const UpdateService = require("../Services/Common/UpdateService")
-const BrandModel = require("../models/Brands/BrandsModel")
+const BrandsModel = require("../models/Brands/BrandsModel")
 const AssociateVerificationService = require("../Services/Common/AssociateVerification")
 const ProductModel = require("../models/Product/ProductModel")
 
 
 //Create Brands
 exports.CreateBrands = async(req,res)=>{
-    const result = await CreateService(req,BrandModel)
+    const result = await CreateService(req,BrandsModel)
     res.status(200).json(result)
 }
 
 //Brand Details
 exports.BrandDetails = async(req,res)=>{
-    const result = await DetailsService(req,BrandModel)
+    const result = await DetailsService(req,BrandsModel)
     res.status(200).json(result)
 }
 
 //Update Brand
 exports.UpdateBrand = async(req,res)=>{
-    const result = await UpdateService(req,BrandModel)
+    const result = await UpdateService(req,BrandsModel)
     res.status(200).json(result)
 }
 
 
 //Brand Dropdown
 exports.BrandDropdown = async(req,res)=>{
-    const result = await DropdownService(req,BrandModel,{_id:1,name:1})
+    const result = await DropdownService(req,BrandsModel,{_id:1,name:1})
     res.status(200).json(result)
 }
 
@@ -39,7 +39,7 @@ exports.BrandDropdown = async(req,res)=>{
 exports.BrandList = async(req,res)=>{
     let searchRegex = {"$regex": req.params.search, $options: 'i'}
     let array = [{name:searchRegex}]
-    const result = await ListService(req,BrandModel,array)
+    const result = await ListService(req,BrandsModel,array)
     res.status(200).json(result)
 }
 
@@ -64,7 +64,7 @@ exports.DeleteBrand = async(req,res)=>{
         return res.status(200).json({status:'Failed',data:checkAssociation, message:'Brand is associated with product'})
     }
     else{
-        let result = await DeleteService(req,BrandModel)
+        let result = await DeleteService(req,BrandsModel)
         res.status(200).json(result)
     }
 }

@@ -35,7 +35,7 @@ router.post('/updateProfile',authMiddleware,UserController.UpdateUser)
 //CreateBrands
 router.post('/createBrands',authMiddleware,BrandsController.CreateBrands)
 //BrandDetails
-router.post('/brandDetails/:id',authMiddleware,BrandsController.BrandDetails)
+router.get('/brandDetails/:id',authMiddleware,BrandsController.BrandDetails)
 //UpdateBrand
 router.post('/updateBrand/:id',authMiddleware,BrandsController.UpdateBrand)
 //DeleteBrand
@@ -49,7 +49,7 @@ router.get('/brandList/:pageNumber/:perPage/:search',authMiddleware,BrandsContro
 //CreateCategory
 router.post('/createCategory',authMiddleware,CategoryController.CreateCategory)
 //CategoryDetails
-router.post('/categoryDetails/:id',authMiddleware,CategoryController.CategoryDetails)
+router.get('/categoryDetails/:id',authMiddleware,CategoryController.CategoryDetails)
 //UpdateCategory
 router.post('/updateCategory/:id',authMiddleware,CategoryController.UpdateCategory)
 //DeleteCategory
@@ -63,47 +63,53 @@ router.get('/categoryList/:pageNumber/:perPage/:search',authMiddleware,CategoryC
 //CreateCustomer
 router.post('/createCustomer',authMiddleware,CustomerController.CreateCustomer)
 //CustomerDetails
-router.post('/customerDetails/:id',authMiddleware,CustomerController.CustomerDetails)
+router.get('/customerDetails/:id',authMiddleware,CustomerController.CustomerDetails)
 //UpdateCustomer
 router.post('/updateCustomer/:id',authMiddleware,CustomerController.UpdateCustomer)
 //CustomerDropdown
 router.get('/customerDropdown',authMiddleware,CustomerController.CustomerDropdown)
 //CustomerList
 router.get('/customerList/:pageNumber/:perPage/:search',authMiddleware,CustomerController.CustomerList)
+//DeleteCustomer
+router.get('/deleteCustomer/:id',authMiddleware,CustomerController.DeleteCustomer)
 
 //? Supplier Routes
 //CreateSupplier
 router.post('/createSupplier',authMiddleware,SupplierController.CreateSupplier)
 // SupplierDetails
-router.post('/supplierDetails/:id',authMiddleware,SupplierController.SupplierDetails)
+router.get('/supplierDetails/:id',authMiddleware,SupplierController.SupplierDetails)
 //UpdateSupplier
 router.post('/updateSupplier/:id',authMiddleware,SupplierController.UpdateSupplier)
 //SupplierDropdown
 router.get('/supplierDropdown',authMiddleware,SupplierController.SupplierDropdown)
 //SupplierList
 router.get('/supplierList/:pageNumber/:perPage/:search',authMiddleware,SupplierController.SupplierList)
+//DeleteSupplier
+router.get('/deleteSupplier/:id',authMiddleware,SupplierController.DeleteSupplier)
 
 //? Product Routes
 //CreateProduct
 router.post('/createProduct',authMiddleware,ProductController.CreateProduct)
 //ProductDetails
-router.post('/productDetails/:id',authMiddleware,ProductController.ProductDetails)
+router.get('/productDetails/:id',authMiddleware,ProductController.ProductDetails)
 //UpdateProduct
 router.post('/updateProduct/:id',authMiddleware,ProductController.ProductUpdate) 
 //ProductDropdown
 router.get('/productDropdown',authMiddleware,ProductController.ProductDropdown)
 //ProductList
 router.get('/productList/:pageNumber/:perPage/:search',authMiddleware,ProductController.ProductDetailsList)
+//DeleteProduct
+router.get('/deleteProduct/:id',authMiddleware,ProductController.DeleteProduct)
 
 //? ExpenseType Routes
 //CreateExpenseType
 router.post('/createExpenseType',authMiddleware,ExpenseTypeController.CreateExpenseType)
 //ExpenseTypeDetails
-router.post('/expenseTypeDetails/:id',authMiddleware,ExpenseTypeController.ExpenseTypeDetails)
+router.get('/expenseTypeDetails/:id',authMiddleware,ExpenseTypeController.ExpenseTypeDetails)
 //UpdateExpenseType
 router.post('/updateExpenseType/:id',authMiddleware,ExpenseTypeController.UpdateExpenseType)
 //DeleteExpenseType
-// router.get('/deleteExpenseType/:id',authMiddleware,ExpenseTypeController.DeleteBrand)
+router.get('/deleteExpenseType/:id',authMiddleware,ExpenseTypeController.DeleteExpenseType)
 //ExpenseTypeDropdown
 router.get('/expenseTypeDropdown',authMiddleware,ExpenseTypeController.ExpenseTypeDropdown)
 //ExpenseTypeList
@@ -113,7 +119,7 @@ router.get('/expenseTypeList/:pageNumber/:perPage/:search',authMiddleware,Expens
 //CreateExpense
 router.post('/createExpense',authMiddleware,ExpenseController.CreateExpense)
 //ExpenseDetails
-router.post('/expenseDetails/:id',authMiddleware,ExpenseController.ExpenseDetails)
+router.get('/expenseDetails/:id',authMiddleware,ExpenseController.ExpenseDetails)
 //UpdateExpense
 router.post('/updateExpense/:id',authMiddleware,ExpenseController.UpdateExpense)
 //DeleteExpense
@@ -155,7 +161,7 @@ router.post('/createSalesReport',authMiddleware,ReportController.SalesReportByDa
 //Create Return Report
 router.post('/createReturnReport',authMiddleware,ReportController.RetunReportByDate)
 
-//? Report Routes
+//? Summary Routes
 //Expense Summary
 router.get('/expenseSummary',authMiddleware,SummaryController.ExpenseSummary)
 //Purchase Summary
@@ -166,11 +172,4 @@ router.get('/salesSummary',authMiddleware,SummaryController.SalesSummary)
 router.get('/returnSummary',authMiddleware,SummaryController.ReturnSummary)
 
 
-
- 
-
-
-
-
-
-module.exports = router    
+module.exports = router     

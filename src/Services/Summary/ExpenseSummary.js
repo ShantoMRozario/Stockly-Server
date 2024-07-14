@@ -13,7 +13,7 @@ const ExpenseSummaryService = async(req)=>{
                     last30Days:[{
                         $group:{
                             _id :{ $dateToString:{format: "%d-%m-%Y", date: "$createdDate"}},
-                            totalAmount:{$sum:"$amount"}
+                            Total:{$sum:"$amount"}
                         }
                     },
                     {$sort:{_id: -1}},

@@ -1,9 +1,13 @@
+const { default: mongoose } = require("mongoose")
 const CreateService = require("../Services/Common/CreateService")
+const DeleteService = require("../Services/Common/DeleteService")
 const DetailsService = require("../Services/Common/DetailsService")
 const DropdownService = require("../Services/Common/DropdownService")
 const ListService = require("../Services/Common/ListService")
 const UpdateService = require("../Services/Common/UpdateService")
 const ExpenseTypeModel = require("../models/Expense/ExpenseTypeModel")
+const AssociateVerificationService = require("../Services/Common/AssociateVerification")
+const ExpenseModel = require("../models/Expense/ExpenseModel")
 
 
 //Create ExpenseType
@@ -39,3 +43,16 @@ exports.ExpenseTypeList = async(req,res)=>{
 }
 
 // Delete ExpenseType
+exports.DeleteExpenseType = async(req,res)=>{
+    let deleteId = req.params.id
+    const ObjectId = mongoose.Types.ObjectId
+    let checkAssociation = await AssociateVerificationService({expenseTypeId:new ObjectId(deleteId)},ExpenseModel)
+    if(checkAssociation){
+        return res.status(200).json({status:'Associated',data:checkAssociation, message:'ExpenseType is associated with expense'})
+    }
+    else{
+        let result = await DeleteService(req,ExpenseTypeModel)
+        res.status(200).json(result)
+    }
+}
+    

@@ -1,9 +1,13 @@
+const { default: mongoose } = require("mongoose")
+const AssociateVerificationService = require("../Services/Common/AssociateVerification")
 const CreateService = require("../Services/Common/CreateService")
+const DeleteService = require("../Services/Common/DeleteService")
 const DetailsService = require("../Services/Common/DetailsService")
 const DropdownService = require("../Services/Common/DropdownService")
 const ListService = require("../Services/Common/ListService")
 const UpdateService = require("../Services/Common/UpdateService")
 const CustomerModel = require("../models/Customer/CustomerModel")
+const SalesModel = require("../models/Sales/SalesModel")
 
 
 //Create Customer
@@ -36,4 +40,19 @@ exports.CustomerList = async(req,res)=>{
     let array = [{customerName:searchRegex},{email:searchRegex},{phoneNumber:searchRegex},{address:searchRegex}]
     const result = await ListService(req,CustomerModel,array)
     res.status(200).json(result)
+}
+
+//Customer Delete
+exports.DeleteCustomer = async(req,res)=>{
+    let deleteId = req.params.id
+    const ObjectId = mongoose.Types.ObjectId
+
+    let checkAssociation = await AssociateVerificationService({customerId:new ObjectId(deleteId)},SalesModel)
+    if(checkAssociation){
+        return res.status(200).json({status:'Associated',data:checkAssociation, message:'Customer is associated with sales'})
+    }
+    else{
+        let result = await DeleteService(req,CustomerModel)
+        res.status(200).json(result)
+    }
 }

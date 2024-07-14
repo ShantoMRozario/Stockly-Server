@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose')
 
-const customerSchema = new mongoose.Schema({
+const supplierSchema = new mongoose.Schema({
     userEmail: {type:String},
     supplierName: {type:String},
     phoneNumber: {type:String,unique: true},
@@ -11,5 +11,5 @@ const customerSchema = new mongoose.Schema({
 },{versionKey: false}
 )
 
-const SupplierModel = mongoose.model('suppliers',customerSchema)
+const SupplierModel = mongoose.model('suppliers',supplierSchema)
 module.exports = SupplierModel

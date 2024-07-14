@@ -1,6 +1,4 @@
 
-
-
 const CreateService = require("../Services/Common/CreateService")
 const DeleteService = require("../Services/Common/DeleteService")
 const DetailsService = require("../Services/Common/DetailsService")
@@ -30,7 +28,7 @@ exports.UpdateExpense = async(req,res)=>{
 exports.ExpenseDetailsList = async(req,res)=>{
     let searchRegex = {"$regex": req.params.search, $options: 'i'}
     
-    let JoinStageOne = {$lookup:{from:'expensetypes',localField:'expenseTypeId',foreignField:'_id',as:'expenseData'}}
+    let JoinStageOne = {$lookup:{from:'expensetypes',localField:'expenseTypeId',foreignField:'_id',as:'expenseTypeData'}}
     let array = [{amount:searchRegex},{details:searchRegex},{'expenseData.name':searchRegex}]
 
     const result = await ListOneJoinService(req,ExpenseModel,array,JoinStageOne)
@@ -39,6 +37,7 @@ exports.ExpenseDetailsList = async(req,res)=>{
 
 //Expense Delete
 exports.DeleteExpense = async(req,res)=>{
-    const result = await DeleteService(req,ExpenseModel)
+  
+    let result = await DeleteService(req,ExpenseModel)
     res.status(200).json(result)
 }

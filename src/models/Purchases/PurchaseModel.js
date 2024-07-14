@@ -9,7 +9,7 @@ const purchaseSchema = new mongoose.Schema({
     discount: {type:Number},
     otherCost: {type:Number},
     shippingCost: {type:Number},
-    total: {type:Number},
+    grandTotal: {type:Number},
     details: {type:String},
 
     createdDate: {type:Date, default: Date.now()}

@@ -17,7 +17,7 @@ const UserCreateService = async (Request,dataModel)=>{
     }
 
     catch(error){
-        return {status:'Failed', data:error.message}
+        return {status:'Failed', data:error, message:error.message}
     }
 }   
 

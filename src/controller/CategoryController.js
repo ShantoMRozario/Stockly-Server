@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const { default: mongoose } = require("mongoose")
 const AssociateVerificationService = require("../Services/Common/AssociateVerification")
 const CreateService = require("../Services/Common/CreateService")
 const DeleteService = require("../Services/Common/DeleteService")

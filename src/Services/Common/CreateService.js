@@ -9,7 +9,7 @@ const CreateService = async (Request,dataModel)=>{
         return {status:'Success', data:data}
     }
     catch(error){
-        return {status:'Failed', data:error.message}    
+        return {status:'Failed', data:error, message:error.message}    
     }
 }
 
